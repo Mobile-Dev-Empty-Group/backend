@@ -19,3 +19,11 @@ Khi cần code 1 model mới, ví dụ task
   - nest g controller task
 - Viết logic xử lý, truy vấn database trong file task.service.ts. Import PrismaClient vào để truy vấn database
 - Viết định nghĩa url api và gọi hàm service xử lý tương ứng trong file controller
+
+Khi cần thay đổi database:
+
+- Thay đổi file schema.prisma
+- npx prisma migrate dev --name comment
+  Nếu thay đổi lớn, migrate thất bại:
+- npx prisma migrate reset
+- npx prisma migrate dev --name init
