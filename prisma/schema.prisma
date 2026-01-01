@@ -1,0 +1,147 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+// --- NGƯỜI DÙNG & CÀI ĐẶT ---
+model User {
+  id                String    @id @default(cuid())
+  email             String    @unique
+  name              String?   // "Thanh Tâm"
+  password          String?
+  avatar            String?   // URL ảnh đại diện
+  provider          AuthProvider @default(EMAIL)
+  
+  // Cài đặt (Settings screen)
+  pushNotifications Boolean   @default(true)
+  darkMode          Boolean   @default(false)
+  hasFinishedOnboarding Boolean @default(false)
+
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  // Quan hệ
+  tasks             Task[]
+  projects          Project[]
+  categories        Category[]
+  passwordResets    PasswordReset[]
+  userChallenges    UserChallenge[]
+
+  @@map("users")
+}
+
+enum AuthProvider {
+  EMAIL
+  GOOGLE
+  FACEBOOK
+}
+
+// --- QUẢN LÝ CÔNG VIỆC (TASKS) ---
+model Task {
+  id            String      @id @default(cuid())
+  title         String
+  description   String?     @db.Text
+  status        TaskStatus  @default(TO_DO)
+  progress      Int         @default(0)       // 0 - 100%
+  isStarred     Boolean     @default(false)
+  
+  // Thời gian & Lịch trình
+  date          DateTime?   // Ngày thực hiện
+  startTime     DateTime?   // Dùng để tính toán stats (Morning/Noon/Night)
+  endTime       DateTime?
+  duration      Int?        // Lưu số phút (VD: 240 cho 4 hours)
+  breakTime     Int?        // Lưu số phút (VD: 20 cho 20 min break)
+  
+  // Lặp lại
+  repeatDay     DayOfWeek?  // Thursday, Friday...
+
+  // Quan hệ
+  userId        String
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  categoryId    String?
+  category      Category?   @relation(fields: [categoryId], references: [id])
+  projectId     String?
+  project       Project?    @relation(fields: [projectId], references: [id])
+
+  completedAt   DateTime?   // Quan trọng để làm Analytics
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@map("tasks")
+}
+
+enum TaskStatus {
+  TO_DO
+  IN_PROGRESS
+  COMPLETED
+}
+
+enum DayOfWeek {
+  Monday
+  Tuesday
+  Wednesday
+  Thursday
+  Friday
+  Saturday
+  Sunday
+}
+
+// --- DỰ ÁN & DANH MỤC ---
+model Project {
+  id      String @id @default(cuid())
+  name    String // "Grocery Shopping App", "Uber Eats redesign"
+  userId  String
+  user    User   @relation(fields: [userId], references: [id])
+  tasks   Task[]
+
+  @@map("projects")
+}
+
+model Category {
+  id     String @id @default(cuid())
+  name   String // "Personal", "Work", "Homework"
+  icon   String?
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+  tasks  Task[]
+
+  @@map("categories")
+}
+
+// --- THỬ THÁCH & THỐNG KÊ ---
+model Challenge {
+  id          String   @id @default(cuid())
+  title       String   // "Complete your top 3 tasks"
+  description String?
+  users       UserChallenge[]
+
+  @@map("challenges")
+}
+
+model UserChallenge {
+  id          String    @id @default(cuid())
+  userId      String
+  challengeId String
+  date        DateTime  @default(now())
+  isCompleted Boolean   @default(false)
+
+  user        User      @relation(fields: [userId], references: [id])
+  challenge   Challenge @relation(fields: [challengeId], references: [id])
+
+  @@map("user_challenges")
+}
+
+model PasswordReset {
+  id        Int      @id @default(autoincrement())
+  email     String
+  code      String   // OTP 5 số
+  expiresAt DateTime
+  user      User     @relation(fields: [email], references: [email])
+
+  @@map("password_resets")
+}
