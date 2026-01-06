@@ -1,7 +1,7 @@
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable, Inject } from '@nestjs/common'; 
-import { PrismaClient } from '../../generated/prisma/client'; 
+import { PrismaClient } from '../../generated/prisma/client.js'; 
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -13,10 +13,14 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: any) {
-    // Payload.sub chứa userId (String)
-    const user = await this.prisma.user.findUnique({ where: { id: payload.sub } });
-    if (user) delete user.password;
-    return user;
-  }
+    async validate(payload: any) {
+        const user = await this.prisma.user.findUnique({ where: { id: payload.sub } });
+        
+        if (!user) return null; // Trả về null nếu không tìm thấy user
+
+        // Kỹ thuật tách password ra khỏi object (thay cho delete)
+        const { password, ...result } = user;
+        
+        return result;
+    }
 }

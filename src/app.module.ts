@@ -6,7 +6,7 @@ import { TaskModule } from './task/task.module.js';
 import { AnalyticModule } from './analytic/analytic.module.js';
 import { ProjectModule } from './project/project.module.js';
 import { CategoryModule } from './category/category.module.js';
-
+import { AuthModule } from './auth/auth.module.js';
 @Module({
   imports: [
     PrismaModule,
@@ -14,6 +14,7 @@ import { CategoryModule } from './category/category.module.js';
     AnalyticModule,
     ProjectModule,
     CategoryModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
