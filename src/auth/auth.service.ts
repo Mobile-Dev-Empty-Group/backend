@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable, UnauthorizedException, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
+import { PrismaClient } from '../../generated/prisma/client';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { RegisterDto, LoginDto, ChangePasswordDto, ForgotPasswordDto, ResetPasswordDto } from './dto/auth.dto';
@@ -7,7 +7,7 @@ import { RegisterDto, LoginDto, ChangePasswordDto, ForgotPasswordDto, ResetPassw
 @Injectable()
 export class AuthService {
   constructor(
-    private prisma: PrismaService,
+    @Inject('PRISMA') private prisma: PrismaClient,    
     private jwtService: JwtService,
   ) {}
 
