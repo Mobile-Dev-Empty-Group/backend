@@ -3,6 +3,10 @@ Cấu trúc thư mục
 - /prisma: thư mục liên quan đến database. Chỉnh sửa file schema.prisma để thay đổi database
 - /src: thư mục code chính. Mỗi model con gồm có service, controller, module. 1 thư mục có controller trong /src tương tứng với 1 sub url ở api. VD có file /src/task/controller.ts thì sẽ tự tạo api /task
 
+Cần cài để chạy đc auth
+npm install @nestjs/passport passport passport-jwt @nestjs/jwt bcrypt class-validator class-transformer
+npm install -D @types/passport-jwt @types/bcrypt
+
 Hướng dẫn chạy code
 
 - npm i
