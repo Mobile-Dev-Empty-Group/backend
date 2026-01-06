@@ -24,6 +24,8 @@ Khi cần thay đổi database:
 
 - Thay đổi file schema.prisma
 - npx prisma migrate dev --name comment
-  Nếu thay đổi lớn, migrate thất bại:
+
+Nếu thay đổi lớn, migrate thất bại:
+
 - npx prisma migrate reset
 - npx prisma migrate dev --name init

@@ -1,10 +1,20 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { PrismaModule } from './prisma/prisma.module';
+import { AppController } from './app.controller.js';
+import { AppService } from './app.service.js';
+import { PrismaModule } from './prisma/prisma.module.js';
+import { TaskModule } from './task/task.module.js';
+import { AnalyticModule } from './analytic/analytic.module.js';
+import { ProjectModule } from './project/project.module.js';
+import { CategoryModule } from './category/category.module.js';
 
 @Module({
-  imports: [PrismaModule],
+  imports: [
+    PrismaModule,
+    TaskModule,
+    AnalyticModule,
+    ProjectModule,
+    CategoryModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

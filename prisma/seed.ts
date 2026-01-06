@@ -3,7 +3,7 @@ import {
   TaskStatus,
   DayOfWeek,
   AuthProvider,
-} from '../generated/prisma/client';
+} from '../generated/prisma/client.js';
 import { PrismaMariaDb } from '@prisma/adapter-mariadb';
 import * as dotenv from 'dotenv';
 dotenv.config();

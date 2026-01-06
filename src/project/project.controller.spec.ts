@@ -1,0 +1,29 @@
+import { jest } from '@jest/globals';
+import { Test, TestingModule } from '@nestjs/testing';
+import { ProjectController } from './project.controller.js';
+import { ProjectService } from './project.service.js';
+
+describe('ProjectController', () => {
+  let controller: ProjectController;
+
+  beforeEach(async () => {
+    const projectServiceMock = {
+      getProjects: jest.fn(),
+      getProjectAdapter: jest.fn(),
+      createProject: jest.fn(),
+      updateProject: jest.fn(),
+      deleteProject: jest.fn(),
+    };
+
+    const module: TestingModule = await Test.createTestingModule({
+      controllers: [ProjectController],
+      providers: [{ provide: ProjectService, useValue: projectServiceMock }],
+    }).compile();
+
+    controller = module.get<ProjectController>(ProjectController);
+  });
+
+  it('should be defined', () => {
+    expect(controller).toBeDefined();
+  });
+});
