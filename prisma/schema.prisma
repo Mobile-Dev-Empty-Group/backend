@@ -31,7 +31,7 @@ model User {
   categories        Category[]
   passwordResets    PasswordReset[]
   userChallenges    UserChallenge[]
-
+  notifications     Notification[]
   @@map("users")
 }
 
@@ -144,4 +144,19 @@ model PasswordReset {
   user      User     @relation(fields: [email], references: [email])
 
   @@map("password_resets")
+}
+
+model Notification {
+  id        Int      @id @default(autoincrement())
+  title     String
+  message   String?
+  isRead    Boolean  @default(false) // Mặc định là chưa đọc
+  
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("notifications")
 }
