@@ -3,12 +3,14 @@ import { PrismaClient } from '../../generated/prisma/client.js';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { RegisterDto, LoginDto, ChangePasswordDto, ForgotPasswordDto, ResetPasswordDto } from './dto/auth.dto.js';
+import { MailService } from '../mail/mail.service.js';
 
 @Injectable()
 export class AuthService {
   constructor(
     @Inject('PRISMA') private prisma: PrismaClient,    
     private jwtService: JwtService,
+    private mailService: MailService,
   ) {}
 
   // 1. REGISTER
@@ -84,8 +86,8 @@ export class AuthService {
     });
 
     // TODO: Gửi email thật ở đây (dùng Nodemailer)
-    // Trả về OTP để test (Production thì KHÔNG được trả về)
-    return { message: 'OTP sent to email', testOtp: otp }; 
+    await this.mailService.sendForgotPassword(dto.email, otp);
+    return { message: 'OTP has been sent to your email' };
   }
 
   // 5. RESET PASSWORD (Dùng OTP để set lại pass)
